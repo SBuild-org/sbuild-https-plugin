@@ -1,7 +1,85 @@
 = SBuild HTTPS Plugin
-:pluginversion: 0.1.2
+:pluginversion: 0.0.9000
+:sbuildversion: 0.7.1
 :toc:
 :toc-placement: preamble
 :toclevels: 1
 
 This SBuild Plugin provides an HTTPS SchemeHandler for http://sbuild.tototec.de[SBuild].
+
+== Download
+
+The SBuild HTTPS Plugin can be downloaded from http://repo1.maven.org/maven2/org/sbuild/org.sbuild.plugins.https/[Maven Central].
+
+To include it in your SBuild build file use the `@classpath` annotation:
+
+[source,scala]
+[subs="attributes"]
+----
+@classpath("mvn:org.sbuild:org.sbuild.plugins.https:{pluginversion}")
+----
+
+== Building from Source
+
+If you want to build this plugin from source, you need at least SBuild {sbuildversion}.
+
+----
+git clone https://github.com/SBuild-org/sbuild-https-plugin.git
+cd sbuild-sbuild-plugin/org.sbuild.plugins.https
+sbuild jar
+----
+
+You will find the built jar in the directory `org.sbuild.plugins.https/target`.
+
+== Configuration
+
+All configurable properties are documented via ScalaDoc. See file link:org.sbuild.plugins.https/src/main/scala/org/sbuild/plugins/https/Https.scala[`Https.scala`].
+
+In it's default configuration, this plugin will register a `https` scheme, which will store all downloaded resources under `.sbuild/https`.
+
+Named plugin instances will register a scheme identical to the plugin instance name.
+
+== Examples
+
+Just using the default configuration:
+
+[source,scala]
+[subs="attributes"]
+----
+import de.tototec.sbuild._
+
+@version("{sbuildversion}")
+@classpath("mvn:org.sbuild:org.sbuild.plugins.https:{pluginversion}")
+class SBuild(implicit _project: Project) {
+
+  Plugin[org.sbuild.plugins.https.Https]
+
+  Target("phony:download") dependsOn "https://raw.github.com/SBuild-org/sbuild-jbake/master/README.adoc"
+
+}
+----
+
+Registering an `unsafeHttps` scheme and disable trust management, to allow connections to sites with self signed certificates.
+
+[source,scala]
+[subs="attributes"]
+----
+import de.tototec.sbuild._
+
+@version("{sbuildversion}")
+@classpath("mvn:org.sbuild:org.sbuild.plugins.https:{pluginversion}")
+class SBuild(implicit _project: Project) {
+
+  Plugin[org.sbuild.plugins.https.Https]("unsafeHttps") configure { _.copy(
+    disableTrustManager = true
+  )}
+
+  // sbuild.tototec.de uses a self signed certificate.
+  Target("phony:download") dependsOn "unsafeHttps://sbuild.tototec.de/sbuild/attachments/download/88/de.tototec.sbuild-0.7.1.jar"
+
+}
+----
+
+== Changelog
+
+_No public releases yet_
