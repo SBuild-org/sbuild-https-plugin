@@ -1,0 +1,7 @@
+= SBuild HTTPS Plugin
+:pluginversion: 0.1.2
+:toc:
+:toc-placement: preamble
+:toclevels: 1
+
+This SBuild Plugin provides an HTTPS SchemeHandler for http://sbuild.tototec.de[SBuild].
