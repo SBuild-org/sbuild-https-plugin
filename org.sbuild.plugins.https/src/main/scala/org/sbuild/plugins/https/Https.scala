@@ -12,8 +12,10 @@ import java.io.File
  * @param downloadDir The directory, where downloaded resources will be stored.
  * @param disableTrustManager If `true`, no certifate checking will be done.
  *   This option is unsafe as it's enables undetected Man-in-the-middle attacks, but might be helpful for testing, e.g. with sites with self signed certificates.
+ * @param basicAuthCredentials If defined, will be used for basic auth againts the https service.
  */
 case class Https(
   schemeName: String,
   downloadDir: File,
-  disableTrustManager: Boolean = false)
+  disableTrustManager: Boolean = false,
+  basicAuthCredentials: Option[BasicAuthCredentials] = None)
