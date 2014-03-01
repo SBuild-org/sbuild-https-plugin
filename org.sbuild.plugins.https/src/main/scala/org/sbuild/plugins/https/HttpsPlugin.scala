@@ -14,6 +14,6 @@ class HttpsPlugin(implicit project: Project) extends Plugin[Https] {
 
   override def applyToProject(instances: Seq[(String, Https)]): Unit = instances.foreach {
     case (name, https) =>
-      SchemeHandler(https.schemeName, new HttpsSchemeHandler(https.downloadDir, https.disableTrustManager))
+      SchemeHandler(https.schemeName, new HttpsSchemeHandler(https.downloadDir, https.disableTrustManager, https.basicAuthCredentials))
   }
 }
