@@ -17,9 +17,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
 import java.security.cert.X509Certificate
 
-case class BasicAuthCredentials(username: String, password: String)
-
-class HttpsSchemeHandler(downloadDir: File, disableTrustManager: Boolean, basicAuthCredentials: Option[BasicAuthCredentials] = None)(implicit project: Project) extends SchemeResolver {
+class HttpsSchemeHandler(downloadDir: File, disableTrustManager: Boolean, authProvider: AuthProvider = AuthProvider.None)(implicit project: Project) extends SchemeResolver {
 
   private val userAgent = s"SBuild/${SBuildVersion.osgiVersion} (HttpsSchemeHandler)"
 
@@ -47,13 +45,14 @@ class HttpsSchemeHandler(downloadDir: File, disableTrustManager: Boolean, basicA
         sslCtx.init(null, Array(trustManager), null)
         clientBuilder.setSslcontext(sslCtx)
       }
-      if (basicAuthCredentials.isDefined) {
-        val credentialsProvider = new BasicCredentialsProvider()
-        val authScope = new AuthScope(source.getHost(), source.getPort())
-        val creds = basicAuthCredentials.get
-        val credentials = new UsernamePasswordCredentials(creds.username, creds.password)
-        credentialsProvider.setCredentials(authScope, credentials)
-        clientBuilder.setDefaultCredentialsProvider(credentialsProvider)
+      authProvider match {
+        case AuthProvider.None =>
+        case AuthProvider.BasicAuth(username, password) =>
+          val credentialsProvider = new BasicCredentialsProvider()
+          val authScope = new AuthScope(source.getHost(), source.getPort())
+          val credentials = new UsernamePasswordCredentials(username, password)
+          credentialsProvider.setCredentials(authScope, credentials)
+          clientBuilder.setDefaultCredentialsProvider(credentialsProvider)
       }
       val httpClient = clientBuilder.build()
       try {

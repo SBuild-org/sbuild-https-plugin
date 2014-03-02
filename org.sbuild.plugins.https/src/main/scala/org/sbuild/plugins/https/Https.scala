@@ -18,4 +18,4 @@ case class Https(
   schemeName: String,
   downloadDir: File,
   disableTrustManager: Boolean = false,
-  basicAuthCredentials: Option[BasicAuthCredentials] = None)
+  authProvider: AuthProvider = AuthProvider.None)
