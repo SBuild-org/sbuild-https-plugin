@@ -5,7 +5,7 @@
 :toc-placement: preamble
 :toclevels: 1
 
-This SBuild Plugin provides an HTTPS SchemeHandler for http://sbuild.tototec.de[SBuild].
+This SBuild Plugin provides an HTTPS SchemeHandler for http://sbuild.org[SBuild].
 
 == Download
 
