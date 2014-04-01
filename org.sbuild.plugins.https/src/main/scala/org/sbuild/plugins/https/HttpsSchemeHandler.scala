@@ -3,6 +3,10 @@ package org.sbuild.plugins.https
 import java.io.File
 import de.tototec.sbuild._
 import java.net.URL
+import org.apache.http.client.CredentialsProvider
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.client.methods.HttpGet
@@ -13,7 +17,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
 import java.security.cert.X509Certificate
 
-class HttpsSchemeHandler(downloadDir: File, disableTrustManager: Boolean)(implicit project: Project) extends SchemeResolver {
+class HttpsSchemeHandler(downloadDir: File, disableTrustManager: Boolean, authProvider: AuthProvider = AuthProvider.None)(implicit project: Project) extends SchemeResolver {
 
   private val userAgent = s"SBuild/${SBuildVersion.osgiVersion} (HttpsSchemeHandler)"
 
@@ -40,6 +44,15 @@ class HttpsSchemeHandler(downloadDir: File, disableTrustManager: Boolean)(implic
         val sslCtx = SSLContext.getInstance("TLS")
         sslCtx.init(null, Array(trustManager), null)
         clientBuilder.setSslcontext(sslCtx)
+      }
+      authProvider match {
+        case AuthProvider.None =>
+        case AuthProvider.BasicAuth(username, password) =>
+          val credentialsProvider = new BasicCredentialsProvider()
+          val authScope = new AuthScope(source.getHost(), source.getPort())
+          val credentials = new UsernamePasswordCredentials(username, password)
+          credentialsProvider.setCredentials(authScope, credentials)
+          clientBuilder.setDefaultCredentialsProvider(credentialsProvider)
       }
       val httpClient = clientBuilder.build()
       try {
