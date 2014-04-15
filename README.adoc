@@ -1,5 +1,6 @@
 = SBuild HTTPS Plugin
-:pluginversion: 0.0.9000
+:pluginversion: 0.1.0
+:buildsbuildversion: 0.7.1
 :sbuildversion: 0.7.9010.0.8.0-M1
 :toc:
 :toc-placement: preamble
@@ -21,7 +22,7 @@ To include it in your SBuild build file use the `@classpath` annotation:
 
 == Building from Source
 
-If you want to build this plugin from source, you need at least SBuild {sbuildversion}.
+If you want to build this plugin from source, you need at least SBuild {buildsbuildversion}.
 
 ----
 git clone https://github.com/SBuild-org/sbuild-https-plugin.git
@@ -82,4 +83,18 @@ class SBuild(implicit _project: Project) {
 
 == Changelog
 
-_No public releases yet_
+== Compatibility Matrix
+
+[cols="1,1", options="header"]
+|===
+| Https Plugin Version
+| SBuild Version
+
+| 0.1.0
+| >= 0.8.0-M1 (0.7.9010)
+|===
+
+=== sbuild-https-plugin 0.1.0
+
+* Initial Release
+* Requires SBuild 0.8.0-M1 (0.7.9010)
