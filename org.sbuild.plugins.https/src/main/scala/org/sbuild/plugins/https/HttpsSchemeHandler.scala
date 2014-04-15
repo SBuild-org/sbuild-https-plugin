@@ -1,7 +1,7 @@
 package org.sbuild.plugins.https
 
+import org.sbuild._
 import java.io.File
-import de.tototec.sbuild._
 import java.net.URL
 import org.apache.http.client.CredentialsProvider
 import org.apache.http.auth.AuthScope;

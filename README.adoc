@@ -1,6 +1,6 @@
 = SBuild HTTPS Plugin
 :pluginversion: 0.0.9000
-:sbuildversion: 0.7.1
+:sbuildversion: 0.7.9010.0.8.0-M1
 :toc:
 :toc-placement: preamble
 :toclevels: 1

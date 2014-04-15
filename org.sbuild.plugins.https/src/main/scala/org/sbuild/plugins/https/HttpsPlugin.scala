@@ -1,6 +1,6 @@
 package org.sbuild.plugins.https
 
-import de.tototec.sbuild._
+import org.sbuild._
 
 class HttpsPlugin(implicit project: Project) extends Plugin[Https] {
 

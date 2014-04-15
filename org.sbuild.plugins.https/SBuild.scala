@@ -1,14 +1,10 @@
 import de.tototec.sbuild._
 import de.tototec.sbuild.ant._
 import de.tototec.sbuild.ant.tasks._
-import de.tototec.sbuild.ant._
-import de.tototec.sbuild.ant.tasks._
-
-import de.tototec.sbuild._
 
 @version("0.7.1")
 @classpath(
-  "mvn:org.sbuild:org.sbuild.plugins.sbuildplugin:0.2.2",
+  "mvn:org.sbuild:org.sbuild.plugins.sbuildplugin:0.3.0",
   "mvn:org.apache.ant:ant:1.8.4",
   "mvn:org.sbuild:org.sbuild.plugins.mavendeploy:0.1.0"
 )
@@ -22,19 +18,35 @@ class SBuild(implicit _project: Project) {
 
   Target("phony:all") dependsOn "jar" ~ sourcesJar
 
-  Plugin[org.sbuild.plugins.sbuildplugin.SBuildPlugin] configure {
-    _.copy(
-      sbuildVersion = "0.7.1",
-      pluginClass = s"${namespace}.Https",
-      pluginVersion = version,
-      deps = Seq(
-        "mvn:commons-logging:commons-logging:1.1.3",
-        "mvn:org.apache.httpcomponents:httpcore:4.3.1",
-        "mvn:org.apache.httpcomponents:httpclient:4.3.2",
-        "mvn:commons-codec:commons-codec:1.6"
-      )
+  import org.sbuild.plugins.sbuildplugin._
+  Plugin[SBuildPlugin] configure (_.copy(
+    sbuildVersion = new SBuildVersion {
+      private[this] val scalaVersion = "2.11.0-RC4"
+      private[this] val scalaBinVersion = "2.11.0-RC4"
+
+      override val version: String = "0.7.9010.0-8-0-M1"
+      override val sbuildClasspath: TargetRefs =
+        s"http://sbuild.org/uploads/sbuild/${version}/org.sbuild-${version}.jar"
+      override val scalaClasspath: TargetRefs =
+        s"mvn:org.scala-lang:scala-library:${scalaVersion}" ~
+          s"mvn:org.scala-lang:scala-reflect:${scalaVersion}" ~
+          s"mvn:org.scala-lang.modules:scala-xml_${scalaBinVersion}:1.0.1"
+      override val scalaCompilerClasspath: TargetRefs =
+        s"mvn:org.scala-lang:scala-library:${scalaVersion}" ~
+          s"mvn:org.scala-lang:scala-reflect:${scalaVersion}" ~
+          s"mvn:org.scala-lang:scala-compiler:${scalaVersion}"
+      override val scalaTestClasspath: TargetRefs =
+        s"mvn:org.scalatest:scalatest_${scalaBinVersion}:2.1.3"
+    },
+    pluginClass = s"${namespace}.Https",
+    pluginVersion = version,
+    deps = Seq(
+      "mvn:commons-logging:commons-logging:1.1.3",
+      "mvn:org.apache.httpcomponents:httpcore:4.3.1",
+      "mvn:org.apache.httpcomponents:httpclient:4.3.2",
+      "mvn:commons-codec:commons-codec:1.6"
     )
-  }
+  ))
 
   import org.sbuild.plugins.mavendeploy._
   Plugin[MavenDeploy] configure {
